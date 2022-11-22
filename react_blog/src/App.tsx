@@ -1,14 +1,54 @@
-import { useCount } from "./components/hooks/count";
+import React, { useState } from "react";
+import { usePeopleList } from "./components/hooks/PeopleList";
 
 const App = () => {
-  const [state, countDispatch] = useCount();
+  const [list, dispatch] = usePeopleList();
+  const [nameInput, setNameInput] = useState('');
+
+  const handleAddButton = () => {
+    if(nameInput) {
+      dispatch({
+        type: 'ADD',
+        payload: {
+          name: nameInput
+        }
+      });
+      setNameInput('');
+    };
+  }
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setNameInput(e.target.value);
+  }
+  const deletePerson = (id: string) => {
+    dispatch({
+      type: 'DEL',
+      payload: { id }
+    });
+  }
+  const handleOrderButton = () => {
+    dispatch({
+      type: 'ORDER'
+    });
+  }
+
   return (
-    <div>
-      contagem: {state.count}
+    <div className="p-5">
+      <input className="border-2 border-gray-600 rounded-xl p-2" type="text" value={nameInput} onChange={handleInputChange} />
+      <button className="bg-gray-600 rounded-xl p-2 text-white block mt-2" onClick={handleAddButton}>Adicionar</button>
+
       <hr />
-      <button className="rounded-xl text-white p-3 bg-blue-700 mr-3" onClick={()=>countDispatch({type: 'ADD'})}>Adicionar</button>
-      <button className="rounded-xl text-white p-3 bg-gray-700 mr-3" onClick={()=>countDispatch({type: 'DEL'})}>Remover</button>
-      <button className="rounded-xl text-white p-3 bg-red-700" onClick={()=>countDispatch({type: 'RESET'})}>Resetar</button>
+
+      <button className="bg-blue-700 rounded-xl p-2 text-white block" onClick={handleOrderButton}>Ordenar</button>
+
+      Lista de pessoas:
+      <ul>
+      {list.map((item, index) => (
+        <li key={index}>
+          {item.name}
+          <button className="bg-red-600 p-1 rounded-xl text-white ml-1" onClick={() => deletePerson(item.id)}>[ Deletar ]</button>
+        </li>
+      ))}
+      </ul>
     </div>
   );
 }
