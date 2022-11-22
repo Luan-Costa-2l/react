@@ -1,50 +1,16 @@
-import { useState, useEffect } from 'react';
-import { Props } from './types/News';
-import { NewsItem } from './components/NewsItem';
-import { api } from './api';
-import './App.css';
+import { useCount } from "./components/hooks/count";
 
-function App() {
-  const [news, setNews] = useState<Props | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
-
-  useEffect(() => {
-    loadNews();
-  }, []);
-
-  const loadNews = async () => {
-    setLoading(true);
-    let json = await api.getAllNews();
-    setLoading(false);
-    setNews(json);
-  }
-  
-
+const App = () => {
+  const [state, countDispatch] = useCount();
   return (
     <div>
+      contagem: {state.count}
       <hr />
-      <main>
-        {loading && 
-          <div className='load'>Carregando...</div>
-        }
-        {!loading && news &&
-          <>
-            <div>Total de notícias: {news.totalResults}</div>
-            {news.results.map((item, index) => (
-              <NewsItem data={item} />
-            ))}
-          </>
-        }
-        {!loading && !news &&
-          <>
-            <div className='setError'>Tente novamente mais tarde.</div>
-            <button className='buttonError' onClick={loadNews}>Recarregar</button>
-          </>
-        }
-      </main>
+      <button className="rounded-xl text-white p-3 bg-blue-700 mr-3" onClick={()=>countDispatch({type: 'ADD'})}>Adicionar</button>
+      <button className="rounded-xl text-white p-3 bg-gray-700 mr-3" onClick={()=>countDispatch({type: 'DEL'})}>Remover</button>
+      <button className="rounded-xl text-white p-3 bg-red-700" onClick={()=>countDispatch({type: 'RESET'})}>Resetar</button>
     </div>
-  )
+  );
 }
 
-export default App
-// https://newsdata.io/api/1/news?apikey=pub_137378a678b009e233cd6402c00d1c3a60878&category=technology&country=br&language=pt
+export default App;
