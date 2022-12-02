@@ -3,11 +3,20 @@ import { useContext } from 'react';
 import { Context } from '../contexts/Context';
 
 export const ShowData = () => {
-    const data = useContext(Context);
+    const {state, dispatch} = useContext(Context);
 
     return (
         <div>
-            tela ShowData de {data.name}
+            <h3>tela ShowData</h3>
+
+            {state.user.name &&
+                <>
+                    Meu nome é: {state.user.name} <br />
+                    Eu tenho: {state.user.age} anos
+                </>
+            }
+            {!state.user.name && 'Não há informações sobre o usuário'}
+            
             <br />
             <Link to='/'>Voltar</Link>
         </div>
